@@ -26,7 +26,7 @@ outreach_pipeline/
 ├── stage4_brevo.py       # Transactional email relay dispatch mechanics
 ├── config.example.py     # API endpoint credential configuration template
 └── README.md             # Systems documentation
-
+```
 🚀 Installation & Local Deployment
 1. Prerequisites
 Ensure you have Python 3.8+ installed on your machine.
@@ -68,7 +68,7 @@ git commit -m "Docs: Add structural README documentation"
 git push
 
 
-
+```
 ## 🧠 Detailed Architecture & Data Flow
 
 The system operates on a synchronized, 4-stage data flow orchestrated by a central controller. Below is the detailed functional breakdown of each module within the pipeline:
