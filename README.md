@@ -66,3 +66,47 @@ Once you have created the file and pasted the code above, open your PowerShell w
 git add README.md
 git commit -m "Docs: Add structural README documentation"
 git push
+
+
+
+## 🧠 Detailed Architecture & Data Flow
+
+The system operates on a synchronized, 4-stage data flow orchestrated by a central controller. Below is the detailed functional breakdown of each module within the pipeline:
+
+### Central Controller (`main.py`)
+*   **Definition:** The primary execution script that acts as the pipeline's central orchestrator.
+*   **Functionality:**
+    *   Initiates a **synchronous data flow** across all sub-modules.
+    *   Accepts a **seed domain** (e.g., `stripe.com`) via standard terminal input.
+    *   Maintains the **state** of the extracted data as it transitions through discovery, enrichment, and verification.
+    *   Generates a **CLI summary view** of verified targets and requires explicit **user confirmation** before executing the final email dispatch to prevent accidental spam.
+
+### Stage 1: Competitor Discovery (`stage1_ocean.py`)
+*   **Definition:** The initial reconnaissance layer responsible for identifying market competitors based on the seed input.
+*   **Functionality:**
+    *   Acts as a **targeted seed-matching filter**.
+    *   Evaluates the user-provided input domain to trace and extract **lookalike competitor organizations** using structural market indicators.
+    *   Returns a structured list of **root domain names** representing high-value B2B targets for the next stage.
+
+### Stage 2: Decision Maker Enrichment (`stage2_prospeo.py`)
+*   **Definition:** The core data acquisition module leveraging the **Prospeo REST API** to find targeted personnel.
+*   **Functionality:**
+    *   Queries the `/search-person` API endpoint using the domains generated in Stage 1.
+    *   Extracts specific **C-Suite/VP level profiles** and their associated professional endpoints.
+    *   Implements **nested JSON parsing** to securely unpack and extract the core email string out of complex, multi-layered API response objects.
+    *   Utilizes **multi-variant key extraction** to accurately identify job titles across inconsistent schema fields (checking for `title`, `job_title`, and `designation`).
+    *   Applies an adaptive **2-second rate-limiting delay** between requests to prevent API threshold blocks and ensure stable server connections.
+
+### Stage 3: Data Validation & Sanitization (`stage3_eazyreach.py`)
+*   **Definition:** A strict programmatic filtering layer designed to clean, verify, and format the raw JSON data layers.
+*   **Functionality:**
+    *   Iterates through the enriched target profiles to catch and discard **masked entities** or **unrevealed placeholder responses** (e.g., `UNAVAILABLE`).
+    *   Verifies structural compliance by ensuring the presence of mandatory characters, such as the **`@` symbol**, in the extracted email strings.
+    *   Guarantees that only **fully resolved and sanitized data models** are passed into the final dispatch queue.
+
+### Stage 4: Outreach Dispatcher (`stage4_brevo.py`)
+*   **Definition:** The terminal module responsible for the programmatic delivery of targeted communications.
+*   **Functionality:**
+    *   Establishes a secure connection with **remote transactional mail relay servers** (utilizing Brevo / standard SMTP protocols).
+    *   Authenticates session requests securely using credentials isolated in the local **`config.py`** environment variables.
+    *   Parses the sanitized data models to securely format and handle the **final email dispatch** to verified target endpoints.
