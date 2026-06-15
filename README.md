@@ -26,3 +26,43 @@ outreach_pipeline/
 ├── stage4_brevo.py       # Transactional email relay dispatch mechanics
 ├── config.example.py     # API endpoint credential configuration template
 └── README.md             # Systems documentation
+
+🚀 Installation & Local Deployment
+1. Prerequisites
+Ensure you have Python 3.8+ installed on your machine.
+
+2. Clone the Repository & Setup Environment
+Bash
+# Clone this repository
+git clone [https://github.com/h-i-r-a-n/outreach_pipeline.git](https://github.com/h-i-r-a-n/outreach_pipeline.git)
+cd outreach_pipeline
+
+# Initialize and activate the virtual environment
+python -m venv venv
+# On Windows PowerShell:
+.\venv\Scripts\Activate.ps1
+3. Setup Environment Secrets
+Rename config.example.py to config.py and supply your actual API tokens and SMTP mail profiles:
+
+Python
+PROSPEO_API_KEY = "your_prospeo_api_key_here"
+
+SMTP_SERVER = "smtp.gmail.com" # Or your transactional mail handler URL
+SMTP_PORT = 587
+SMTP_USER = "your_email@domain.com"
+SMTP_PASSWORD = "your_app_specific_password"
+4. Execute the System Pipeline
+Run the controller file and enter a target seed company domain (e.g., stripe.com) when prompted:
+
+Bash
+python main.py
+
+---
+
+### How to push this to your live GitHub repository:
+Once you have created the file and pasted the code above, open your PowerShell window and run these three quick commands to update your repository live:
+
+```powershell
+git add README.md
+git commit -m "Docs: Add structural README documentation"
+git push
